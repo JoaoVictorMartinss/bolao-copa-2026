@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copa 2026 — Bolão do Grupo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #00a86b;
+    --green-dark: #007a4d;
+    --green-light: #e6f7f0;
+    --gold: #f5c518;
+    --gold-dark: #c49b00;
+    --blue: #003087;
+    --red: #c8102e;
+    --white: #ffffff;
+    --off-white: #f7f5f0;
+    --gray: #6b6b6b;
+    --dark: #0f0f0f;
+    --radius: 16px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Campo de futebol no fundo */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.015) 60px,
+        rgba(255,255,255,0.015) 61px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.015) 60px,
+        rgba(255,255,255,0.015) 61px
+      );
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border: 2px solid rgba(255,255,255,0.04);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Glow verde no topo */
+  .glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(0,168,107,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    backdrop-filter: blur(20px);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .trophy {
+    text-align: center;
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    letter-spacing: 3px;
+    text-align: center;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--green);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    margin-bottom: 2.5rem;
+  }
+
+  label {
+    display: block;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    outline: none;
+    transition: all 0.2s;
+    margin-bottom: 1.5rem;
+  }
+
+  input[type="text"]::placeholder { color: rgba(255,255,255,0.25); }
+
+  input[type="text"]:focus {
+    border-color: var(--green);
+    background: rgba(0,168,107,0.08);
+    box-shadow: 0 0 0 3px rgba(0,168,107,0.15);
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+  }
+
+  .btn-primary:hover {
+    background: var(--green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,168,107,0.35);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(255,255,255,0.35);
+    color: var(--white);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .loading-msg {
+    color: var(--green);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .rules {
+    margin-top: 2rem;
+    background: rgba(245, 197, 24, 0.07);
+    border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 12px;
+    padding: 1.2rem;
+  }
+
+  .rules-title {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.8rem;
+  }
+
+  .rules ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .rules li {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rules li span {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .deadline-badge {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.5px;
+  }
+
+  .deadline-badge strong {
+    color: rgba(255,255,255,0.5);
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<div class="card">
+  <div class="trophy">🏆</div>
+  <h1 class="title">Copa 2026</h1>
+  <p class="subtitle">⚽ Bolão do Grupo ⚽</p>
+  <div class="divider"></div>
+
+  <label for="nome">Seu nome completo</label>
+  <input type="text" id="nome" placeholder="Ex: João Victor" autocomplete="off" maxlength="40">
+
+  <p class="error-msg" id="error-msg">Por favor, insira seu nome antes de continuar.</p>
+  <p class="loading-msg" id="loading-msg">Verificando cadastro...</p>
+
+  <button class="btn-primary" id="btn-palpites" onclick="entrar('palpites')">
+    ⚽ Fazer meus palpites
+  </button>
+  <button class="btn-secondary" onclick="entrar('ranking')">
+    🏅 Ver ranking geral
+  </button>
+
+  <div class="rules">
+    <p class="rules-title">🎯 Pontuação</p>
+    <ul>
+      <li>Placar exato do jogo <span>+7 pts</span></li>
+      <li>Acertou o vencedor/empate <span>+3 pts</span></li>
+      <li>Quem passa no mata-mata <span>+5 pts</span></li>
+      <li>Campeão da Copa <span>+15 pts</span></li>
+      <li>Artilheiro <span>+10 pts</span></li>
+    </ul>
+  </div>
+
+  <p class="deadline-badge">Palpites encerram em <strong>11 de junho de 2026</strong> às 23:59</p>
+</div>
+
+<script>
+  function entrar(destino) {
+    const nome = document.getElementById('nome').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+    const loadingMsg = document.getElementById('loading-msg');
+
+    if (destino === 'ranking') {
+      window.location.href = 'ranking.html';
+      return;
+    }
+
+    if (!nome) {
+      errorMsg.style.display = 'block';
+      document.getElementById('nome').focus();
+      return;
+    }
+
+    if (nome.length < 2) {
+      errorMsg.textContent = 'Nome muito curto. Use seu nome completo.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    errorMsg.style.display = 'none';
+    loadingMsg.style.display = 'block';
+
+    // Salva o nome na sessão
+    sessionStorage.setItem('nomeJogador', nome);
+
+    setTimeout(() => {
+      window.location.href = 'palpites.html';
+    }, 600);
+  }
+
+  // Enter para confirmar
+  document.getElementById('nome').addEventListener('keydown', e => {
+    if (e.key === 'Enter') entrar('palpites');
+  });
+
+  // Verificar se já tem nome salvo
+  const nomeSalvo = sessionStorage.getItem('nomeJogador');
+  if (nomeSalvo) {
+    document.getElementById('nome').value = nomeSalvo;
+  }
+</script>
+</body>
+</html>
